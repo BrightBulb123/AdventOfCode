@@ -21,5 +21,33 @@ with open(r"Day1\Day1Input.txt") as file:
 
         if len(f_list) > 3:
             f_list = f_list[1:]
-    
+
     print(count)
+
+
+# Papa's Solution:
+
+# with open(r"Day1\Day1Input.txt") as file:
+
+#     count = 0
+
+#     previous = []
+#     current = []
+
+#     window = 0
+
+#     for line in file:
+#         current.append(int(line))
+#         window += 1
+
+#         if(window < 3):
+#             continue
+
+#         if previous and sum(current) > sum(previous):
+#             count += 1
+
+#         previous = current
+#         current = current[1:]
+#         window = 2
+
+#     print(count)
