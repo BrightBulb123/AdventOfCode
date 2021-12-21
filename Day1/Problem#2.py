@@ -13,7 +13,7 @@ with open(r"Day1\Day1Input.txt") as file:
 
         if len(s_list) > 3:
             s_list = s_list[1:]
-        
+
         if (len(f_list) == 3 and len(s_list) == 3) and (sum(s_list) > sum(f_list)):
             count += 1
 
