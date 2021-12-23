@@ -10,17 +10,13 @@ with open(file_name) as file:
     for day in range(1, days + 1):
         new_fish = 0
         for timer, value in all_fish.items():
-            if 1 < timer < 8:
+            if timer > 1:
                 if value != 0:
                     all_fish[timer - 1] = value
                     all_fish[timer] = 0
             elif timer == 0:
                 if value != 0:
                     new_fish += value
-            elif timer == 8:
-                if value != 0:
-                    all_fish[7] = value
-                    all_fish[8] = 0
             elif timer == 1:
                 if value != 0:
                     all_fish[0] = value
