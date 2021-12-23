@@ -1,22 +1,37 @@
-file_name = "Day6/Day6TestInput.txt"
+file_name = "Day6/Day6Input.txt"
 days = 256
 
 with open(file_name) as file:
-    all_fish = file.readline().strip().split(',')
+    line = file.readline().strip().split(',')
+    all_fish = {0: line.count('0'), 1: line.count('1'), 2: line.count('2'),
+                3: line.count('3'), 4: line.count('4'), 5: line.count('5'),
+                6: line.count('6'), 7: line.count('7'), 8: line.count('8')}
 
-    for day in range(1, days+1):
-        temp = all_fish.copy()
-        for idx, fish in enumerate(all_fish):
-            fish = int(fish)
-            fish -= 1
+    for day in range(1, days + 1):
+        new_fish = 0
+        for timer, value in all_fish.items():
+            if 1 < timer < 8:
+                if value != 0:
+                    all_fish[timer - 1] = value
+                    all_fish[timer] = 0
+            elif timer == 0:
+                if value != 0:
+                    new_fish += value
+            elif timer == 8:
+                if value != 0:
+                    all_fish[7] = value
+                    all_fish[8] = 0
+            elif timer == 1:
+                if value != 0:
+                    all_fish[0] = value
+                    all_fish[1] = 0
+                else:
+                    all_fish[0] = 0
 
-            if fish == -1:
-                temp.append('8')
-                fish = 6
+        if new_fish:
+            all_fish[8] += new_fish
+            all_fish[6] += new_fish
 
-            temp[idx] = str(fish)
+        print(f"Day {day} ({sum(all_fish.values())}): {all_fish}\n")
 
-        all_fish = temp.copy()
-        # print(f"Day {day} ({len(all_fish)} fish): {all_fish}")  # Uncomment this line to see the daily increase in the lanternfish populace
-
-    print(f"\nAfter {days} days, the total number of lanternfish is: {len(all_fish)}")
+    print(f"\nAfter {days} days, the total number of lanternfish is: {sum(all_fish.values())}")
