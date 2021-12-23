@@ -1,4 +1,4 @@
-file_name = "Day6/Day6TestInput.txt"
+file_name = "Day6/Day6Input.txt"
 days = 80
 
 with open(file_name) as file:

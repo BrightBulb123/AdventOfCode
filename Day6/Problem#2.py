@@ -1,5 +1,5 @@
 file_name = "Day6/Day6Input.txt"
-days = 256
+days = 80
 
 with open(file_name) as file:
     line = file.readline().strip().split(',')
@@ -28,6 +28,6 @@ with open(file_name) as file:
             all_fish[8] += new_fish
             all_fish[6] += new_fish
 
-        print(f"Day {day} ({sum(all_fish.values())}): {all_fish}\n")
+        # print(f"Day {day} ({sum(all_fish.values())}): {all_fish}\n")  # Uncomment this line to see the fish populace changing each day
 
     print(f"\nAfter {days} days, the total number of lanternfish is: {sum(all_fish.values())}")
