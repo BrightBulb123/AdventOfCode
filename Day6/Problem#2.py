@@ -3,9 +3,7 @@ days = 80
 
 with open(file_name) as file:
     line = file.readline().strip().split(',')
-    all_fish = {0: line.count('0'), 1: line.count('1'), 2: line.count('2'),
-                3: line.count('3'), 4: line.count('4'), 5: line.count('5'),
-                6: line.count('6'), 7: line.count('7'), 8: line.count('8')}
+    all_fish = {t: line.count(str(t)) for t in range(9)}
 
     for day in range(1, days + 1):
         new_fish = 0
