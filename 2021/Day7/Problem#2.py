@@ -1,36 +1,27 @@
-import timeit
+from collections import Counter
 
-print(timeit.timeit("""
 file_name = "Day7/Day7Input.txt"
 
 with open(file_name) as file:
-    horizontal_positions = tuple(map(int, file.readline().strip().split(",")))
+    all_positions = tuple(map(int, file.readline().strip().split(",")))
 
-position_map = {
-    pos: horizontal_positions.count(pos) for pos in set(horizontal_positions)
+
+max_pos = max(all_positions) + 1
+counts_per_pos = Counter(all_positions)
+gauss = [0, 1]
+
+for k in range(2, max_pos):
+    gauss.append(gauss[k - 1] + k)
+
+new_costs = {
+    k: sum(
+        gauss[abs(k - kk)] * counts_per_pos[kk]
+        for kk in counts_per_pos
+        if k != kk
+    )
+    for k in range(1, max_pos // 2)
 }
 
-feul_spends = []
+new_min_cost_pos = min(new_costs, key=new_costs.get)
 
-for new_pos in range(max(position_map.keys()) // 2):
-    feul_spends.append(
-        sum(
-            abs(new_pos - current_pos) * n
-            for current_pos, n in position_map.items()
-        )
-    )
-
-#print(f"Min Cost Step 1: {min(feul_spends)}")
-
-new_feul_spends = []
-
-for new_pos in range(max(position_map.keys()) // 2):
-    new_feul_spends.append(
-        sum(
-            ((abs(new_pos - current_pos) * (1 + abs(new_pos - current_pos))) // 2)
-            * n
-            for current_pos, n in position_map.items()
-        )
-    )
-#print(f"Min Cost Step 2: {min(new_feul_spends)}")
-""", number=100))
+print(f"New Minimum Cost is {new_costs[new_min_cost_pos]} to position {new_min_cost_pos}")
