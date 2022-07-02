@@ -5,7 +5,8 @@ with open(file_name) as file:
     lines = file.readlines()
 
 
-lines = list(map(lambda x: x.replace('\n', ''), lines))
+lines = list(map(lambda x: x.replace("\n", ""), lines))
+
 
 def check_cell(depth: int, idx: int, lines: list[str]) -> bool:
     """Check up, down, left, and right of the current element at depth `depth` and index `idx`, and return True if it is the lowest value among them."""
@@ -38,6 +39,10 @@ def check_cell(depth: int, idx: int, lines: list[str]) -> bool:
 
 low_points = []
 for depth, row in enumerate(lines):
-    low_points.extend(int(char) for idx, char in enumerate(row) if check_cell(depth=depth, idx=idx, lines=lines))
+    low_points.extend(
+        int(char)
+        for idx, char in enumerate(row)
+        if check_cell(depth=depth, idx=idx, lines=lines)
+    )
 
-print(sum(map(lambda x: x+1, low_points)))
+print(sum(map(lambda x: x + 1, low_points)))
