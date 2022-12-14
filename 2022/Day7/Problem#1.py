@@ -28,7 +28,7 @@ class File:
         return f"{self.name} - {self.size}"
 
 
-tree: dict[tuple(str, int), list[tuple(str, int) | File]] = {}
+directories: dict[tuple(str, int), list[tuple(str, int) | File]] = {}
 
 current_directory = None
 children = []
@@ -41,11 +41,11 @@ for line in lines:
                 level -= 1
             else:
                 if current_directory is not None:
-                    tree[current_directory] = children
+                    directories[current_directory] = children
                 children = []
 
                 current_directory = (line.replace("$ cd ", ""), level)
-                tree[current_directory] = children
+                directories[current_directory] = children
                 level += 1
     elif "dir" in line:
         directory = (line.replace("dir ", ""), level)
@@ -55,4 +55,37 @@ for line in lines:
         children.append(file)
 
 
-pprint(tree, compact=True)
+pprint(directories, compact=True)
+
+
+checked = {k:False for k in directories}
+sizes = {k:0 for k in directories}
+
+
+def directory_size_checker(directory: tuple(str, int)) -> int:
+    contents = directories[directory]
+    size = 0
+    if not checked[directory]:
+        for item in contents:
+            size += item.size if isinstance(item, File) else directory_size_checker(item)
+            sizes[directory] = size
+            checked[directory] = True
+    else:
+        size = sizes[directory]
+    return size
+
+
+total = 0
+for directory, contents in directories.items():
+    size = 0
+    if not checked[directory]:
+        size = directory_size_checker(directory=directory)
+        sizes[directory] = size
+        checked[directory] = True
+    else:
+        size = sizes[directory]
+    if size <= 100_000:
+        total += size
+
+
+print("\n\n" + str(total))
