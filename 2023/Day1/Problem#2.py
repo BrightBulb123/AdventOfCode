@@ -8,7 +8,7 @@ with open(file_name) as file:
     lines = map(lambda x: x.replace("\n", ""), file.readlines())
 
 words_to_digits = {word:(digit+1) for digit, word in enumerate("one|two|three|four|five|six|seven|eight|nine|ten".split("|"))}
-digits_pattern = re.compile(r"\d|one|two|three|four|five|six|seven|eight|nine|ten")
+digits_pattern = re.compile(r"[1-9]|one|two|three|four|five|six|seven|eight|nine|ten")
 
 total = 0
 for line in lines:
