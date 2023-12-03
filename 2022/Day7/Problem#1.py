@@ -1,7 +1,8 @@
+import contextlib
 import re
 
 
-file_name = "2022/Day7/Day7TestInput.txt"
+file_name = "2022/Day7/Day7Input.txt"
 
 
 with open(file_name) as file:
@@ -40,11 +41,15 @@ class Directory:
                     self.contents[self.contents.index(item)] = item
             else:
                 self.contents.append(item)
-            self.size = self.get_size()
+        self.size = self.get_size()
+        parent = self.parent
+        while parent is not None:  # Update all the parents' size
+            parent.size = parent.get_size()
+            parent = parent.parent
 
 
 class File:
-    def __init__(self, name: str, extension: str, size: int) -> None:
+    def __init__(self, name: str, extension: str | None, size: int) -> None:
         self.name = name
         self.extension = extension
         self.size = size
@@ -65,7 +70,7 @@ class File:
 
 root = Directory("~")
 current_dir = root  # Reference, not a copy, so any changes are still made to root
-list_mode = False
+list_mode = False  # Only True when `ls` command is executed
 for line in lines:
     if "$" in line:
         list_mode = False
@@ -74,11 +79,16 @@ for line in lines:
                 current_dir = current_dir.parent
             else:
                 new_directory = Directory(line.split("$ cd ")[-1])
-                current_dir_contents_names = [d.name if isinstance(d, Directory) else None for d in current_dir.contents]
+                current_dir_contents_names = [
+                    d.name if isinstance(d, Directory) else None
+                    for d in current_dir.contents
+                ]
                 if new_directory.name not in current_dir_contents_names:
                     current_dir.add_to_contents(new_directory)
                 else:
-                    new_directory = current_dir.contents[current_dir_contents_names.index(new_directory.name)]
+                    new_directory = current_dir.contents[
+                        current_dir_contents_names.index(new_directory.name)
+                    ]
                 current_dir = new_directory
         elif "ls" in line:
             list_mode = True
@@ -89,6 +99,28 @@ for line in lines:
             current_dir.add_to_contents(new_directory)
         else:
             size = int(re.split(r"[^0-9]+", line)[0])
-            name, extension = re.split(r"\d+ ", line)[-1].split(".")
+            try:
+                name, extension = re.split(r"\d+ ", line)[-1].split(".")
+            except ValueError:
+                name = re.split(r"\d+ ", line)[-1]
+                extension = None
             f = File(name=name, extension=extension, size=size)
             current_dir.add_to_contents(f)
+
+
+def directory_crawler(directory: Directory, threshold: int) -> list[Directory] | None:
+    directories_that_meet_threshold = []
+    for item in directory.contents:
+        if isinstance(item, Directory):
+            if item.size <= threshold:
+                directories_that_meet_threshold.append(item)
+            with contextlib.suppress(TypeError):
+                directories_that_meet_threshold.extend(
+                    directory_crawler(directory=item, threshold=threshold)
+                )
+
+    return directories_that_meet_threshold
+
+
+directories_that_meet_threshold = directory_crawler(root, 100_000)
+print(sum(directory.size for directory in directories_that_meet_threshold))
