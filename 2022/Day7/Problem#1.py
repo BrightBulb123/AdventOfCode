@@ -74,7 +74,11 @@ for line in lines:
                 current_dir = current_dir.parent
             else:
                 new_directory = Directory(line.split("$ cd ")[-1])
-                current_dir.add_to_contents(new_directory)
+                current_dir_contents_names = [d.name if isinstance(d, Directory) else None for d in current_dir.contents]
+                if new_directory.name not in current_dir_contents_names:
+                    current_dir.add_to_contents(new_directory)
+                else:
+                    new_directory = current_dir.contents[current_dir_contents_names.index(new_directory.name)]
                 current_dir = new_directory
         elif "ls" in line:
             list_mode = True
