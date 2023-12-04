@@ -114,10 +114,10 @@ def directory_crawler(directory: Directory, threshold: int) -> list[Directory] |
         if isinstance(item, Directory):
             if item.size <= threshold:
                 directories_that_meet_threshold.append(item)
-            with contextlib.suppress(TypeError):
+            with contextlib.suppress(TypeError):  # Nothing passed in to Extend
                 directories_that_meet_threshold.extend(
                     directory_crawler(directory=item, threshold=threshold)
-                )
+                )  # Just moves on if error is encountered.
 
     return directories_that_meet_threshold
 
