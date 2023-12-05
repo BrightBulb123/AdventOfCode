@@ -23,11 +23,9 @@ for line_num, line in enumerate(lines):
 
         numbers_before = line[:column_num]
         numbers_after = line[column_num + 1 :]  # inclusive:exclusive
-        numbers_lower_before = [i if i < number else None for i in numbers_before]
-        numbers_lower_after = [i if i < number else None for i in numbers_after]
-        if (numbers_before[-1] < number and all(numbers_lower_before)) or (
-            (numbers_after[0] < number) and all(numbers_lower_after)
-        ):
+        numbers_lower_before = [i < number for i in numbers_before]
+        numbers_lower_after = [i < number for i in numbers_after]
+        if all(numbers_lower_before) or all(numbers_lower_after):
             visible_trees.append(co_ords)
             continue
 
@@ -35,13 +33,9 @@ for line_num, line in enumerate(lines):
         numbers_below = [
             l[column_num] for l in lines[line_num + 1 :]
         ]  # inclusive:exclusive
-        numbers_lower_above = [i if i < number else None for i in numbers_above]
-        numbers_lower_below = [i if i < number else None for i in numbers_below]
-        if (
-            (numbers_above[-1] < number)
-            and (all(numbers_lower_above))
-            or ((numbers_below[0] < number) and all(numbers_lower_below))
-        ):
+        numbers_lower_above = [i < number for i in numbers_above]
+        numbers_lower_below = [i < number for i in numbers_below]
+        if all(numbers_lower_above) or all(numbers_lower_below):
             visible_trees.append(
                 co_ords
             )  # This one doesn't need a `continue` since it's at the end
