@@ -1,6 +1,3 @@
-import time
-
-
 file_name = "2023/Day5/Day5TestInput.txt"
 
 
