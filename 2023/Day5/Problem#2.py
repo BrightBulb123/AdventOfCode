@@ -1,7 +1,7 @@
 from pprint import pprint
 
 
-file_name = "2023/Day5/Day5Input.txt"
+file_name = "2023/Day5/Day5TestInput.txt"
 
 
 with open(file_name) as file:
