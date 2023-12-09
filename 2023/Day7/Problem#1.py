@@ -1,7 +1,6 @@
+import random
 import re
 from collections import Counter
-import random
-
 
 file_name = "2023/Day7/Day7Input.txt"
 
@@ -42,6 +41,7 @@ class Hand:
         )
     }
     hand_nums = {}
+    HAND_LENGTH = 5
 
     def __init__(self, cards: list[str], bid: int) -> None:
         self.hand_id = int(random.random() * 1000000000)
@@ -55,7 +55,7 @@ class Hand:
         self.cards_counter = Counter(self.cards)
         self.bid = bid
         self.distinction = self.distinction_evaluator()
-        self.hand_card_powers = {c: Hand.card_powers[c] for c in self.cards_counter}
+        self.hand_card_powers = [Hand.card_powers[c] for c in self.cards]
         self.hand_total_power = sum(Hand.card_powers[c] for c in self.cards)
 
     def __eq__(self, __value: object) -> bool:
@@ -68,9 +68,9 @@ class Hand:
         return hash(tuple(self.cards))
 
     def distinction_evaluator(self) -> str:
-        if len(self.cards) != 5:
+        if len(self.cards) != Hand.HAND_LENGTH:
             raise IncorrectInputError(
-                f"Not a valid hand of cards! (len({self.cards}) != 5)"
+                f"Not a valid hand of cards! (len({self.cards}) != {Hand.HAND_LENGTH})"
             )
         match len(self.cards_counter):
             case 1:
@@ -91,15 +91,11 @@ class Hand:
             case 4:
                 return "One pair"
             case 5:
-                return "High Card"
+                return "High card"
             case _:
                 raise IncorrectInputError(
                     f"Not a valid hand of cards! (cards_counter = {self.cards_counter})"
                 )
-
-
-def cards_sorter(cards: list[tuple[str, int]]) -> list[tuple[str, int]]:
-    return sorted(cards, key=lambda tup: Hand.card_powers[tup[0]], reverse=True)
 
 
 all_hands: list[Hand] = []
@@ -113,32 +109,10 @@ rankings: dict[str, list[Hand]] = {}
 for hand_type in Hand.card_distinctions:
     hands_of_type = [hand for hand in all_hands if hand.distinction == hand_type]
     if len(hands_of_type) > 1:
-        final_hands: list[Hand] = []
-        next_to_sort_hands: list[Hand] = hands_of_type
-        for i in range(5):
-            # If all cards at index i are the same, no point sorting, move on
-            if len({h.cards[i] for h in next_to_sort_hands}) == 1:
-                continue
-
-            cards_counter = Counter((h.cards[i]) for h in next_to_sort_hands)
-            all_cards_at_index_i = [(h.cards[i], h.hand_id) for h in next_to_sort_hands]
-            sorted_all_cards_at_index_i = cards_sorter(all_cards_at_index_i)
-
-            temp = []
-            for card_tup in sorted_all_cards_at_index_i:
-                card = card_tup[0]
-                if cards_counter[card] <= 1:  # No multiples
-                    temp.append(
-                        next_to_sort_hands.pop(
-                            next_to_sort_hands.index(Hand.hand_nums[card_tup[-1]])
-                        )
-                    )
-            final_hands = temp + final_hands
-
-            if not next_to_sort_hands:  # exhausted the list
-                break
-
-        hands_of_type = final_hands
+        hands_of_type.sort(
+            key=lambda h: tuple(h.hand_card_powers[i] for i in range(Hand.HAND_LENGTH)),
+            reverse=True,
+        )
 
     rankings[hand_type] = hands_of_type
 
