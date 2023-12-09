@@ -49,14 +49,10 @@ class Hand:
             self.hand_id = int(random.random() * 1000000000)
         Hand.hand_nums[self.hand_id] = self
         self.cards = cards
-        self.cards_sorted = sorted(
-            self.cards, key=lambda c: Hand.card_powers[c], reverse=True
-        )  # Highest to lowest
         self.cards_counter = Counter(self.cards)
         self.bid = bid
         self.distinction = self.distinction_evaluator()
         self.hand_card_powers = [Hand.card_powers[c] for c in self.cards]
-        self.hand_total_power = sum(Hand.card_powers[c] for c in self.cards)
 
     def __eq__(self, __value: object) -> bool:
         if not isinstance(__value, Hand):
